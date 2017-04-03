@@ -5,10 +5,10 @@ It's reproducing the KDE(Kernel Density Estimation) algorithm on the paper
 [Semantic Annotation of Mobility Data using Social Media](http://dl.acm.org/citation.cfm?id=2741675) by Fei Wu.
 
 #### Prerequisites
-python3
-flask (version==0.10)
-numpy
-pandas
+* python3
+* flask (version==0.10)
+* numpy
+* pandas
 
 #### The architecture of this project
 The following list show the files in this project.
