@@ -9,7 +9,7 @@ __author__ = 'xiaochenwang94'
 __version__ = '1.0'
 
 import json
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template, request
 from Annotation import Annotation
 app = Flask(__name__)
 
