@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+    <!--<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" />-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>  -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <style type="text/css">
         html, body {
             height: 100%;
@@ -125,7 +141,17 @@
 <body>
 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 <div id="map"></div>
+
 <div id="right-panel">
+    <div class="form-group">
+        <div class='input-group date' id='datetimepicker6'>
+            <input type='text' class="form-control"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+        </div>
+    </div>
+
     <table class="table">
         <caption>Annotation Results</caption>
         <thead>
@@ -136,25 +162,24 @@
         </tr>
         </thead>
         <tbody id="tbody">
-
-        <!--<tr>-->
-            <!--<td>Tanmay</td>-->
-            <!--<td>Bangalore</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td>Sachin</td>-->
-            <!--<td>Mumbai</td>-->
-        <!--</tr>-->
         </tbody>
     </table>
 </div>
 <script type="text/javascript">
 
+    var date;
+
+    $('#datetimepicker6').datetimepicker({
+    });
+    $("#datetimepicker6").on("dp.change", function (e) {
+        date = e.date.toString();
+    });
+
     var map;
-    var resData="";
+    var resData = "";
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 40.75, lng: -73.84},
+            center: {lat: 34.041641, lng: -118.266905},
             zoom: 15
         });
 
@@ -237,23 +262,24 @@
                 data: {
                     "latitude": lat,
                     "longitude": lng,
+                    "date": date,
                 },
                 error: function (XMLResponse) {
                     alert(XMLResponse.responseText)
                 },
                 success: function (data, textStatus) {
                     alert("success");
-                    var h='';
-                    for(var i=0;i<10;i++){
+                    var h = '';
+                    for (var i = 0; i < 20; i++) {
                         console.log(data[1]);
-                        h=h+'<tr>'
-                        h=h+'<td>'+(i+1)+'</td>';
-                        h=h+'<td>'+data[i].Result.word+'</td>';
-                        h=h+'<td>'+data[i].Result.score+'</td>';
-                        h=h+'</tr>';
+                        h = h + '<tr>'
+                        h = h + '<td>' + (i + 1) + '</td>';
+                        h = h + '<td>' + data[i].Result.word + '</td>';
+                        h = h + '<td>' + data[i].Result.score + '</td>';
+                        h = h + '</tr>';
                     }
 
-                    document.getElementById('tbody').innerHTML=h;
+                    document.getElementById('tbody').innerHTML = h;
 
 
                 }

@@ -19,12 +19,16 @@ def index():
     if request.method == "POST":
         latitude = request.form.get("latitude", "null")
         longitude = request.form.get("longitude", "null")
+        date = request.form.get("date","null")
+        date = date.split(' ')
+        da = date[2]
         tweets_file = './data/tweets_processed.csv'
         stop_words_file = './data/stop-word-list.csv'
         ann = Annotation()
         ann.initialize_data(tweets_file, stop_words_file)
-        result = ann.anntation(latitude, longitude, '2016-04-14')
-        result = result[0:11]
+        print('2016-04-'+da)
+        result = ann.anntation(latitude, longitude, '2016-04-'+da)
+        result = result[0:21]
         jsonstr = json.dumps([r.toJSON() for r in result])
         return jsonstr
     else:
