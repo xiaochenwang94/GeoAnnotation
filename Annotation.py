@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import os
 import pandas as pd
@@ -74,15 +75,35 @@ class Annotation(object):
         print('Anntation ended...')
         return self.anntate_words
 
+    def select_words(self, date):
+        file = './data/words'+date+'.json'
+        if not os.path.isfile(file):
+            select = self.tweets[self.tweets['Date'] == date]
+            if select.shape[0] == 0:
+                return None
+            word_list = defaultdict(list)
+            for index, row in select.iterrows():
+                words = set(row['Tweet content'].split())
+                for w in self.word_filter(words):
+                    word_list[w].append((row['Latitude'], row['Longitude']))
+            with open(file, 'w') as f:
+                json.dump(word_list, f)
+            return word_list
+        else:
+            with open(file, 'r') as f:
+                data = json.load(f)
+            return data
+
     def kde(self, latitude, longitude, date):
-        print('Using kernel density estimation...')
-        select = self.tweets[self.tweets['Date'] == date]
-        print('select tweets num = %s' % select.shape[0])
-        word_list = defaultdict(list)
-        for index, row in select.iterrows():
-            words = set(row['Tweet content'].split())
-            for w in self.word_filter(words):
-                word_list[w].append((row['Latitude'], row['Longitude']))
+        # print('Using kernel density estimation...')
+        # select = self.tweets[self.tweets['Date'] == date]
+        # print('select tweets num = %s' % select.shape[0])
+        # word_list = defaultdict(list)
+        # for index, row in select.iterrows():
+        #     words = set(row['Tweet content'].split())
+        #     for w in self.word_filter(words):
+        #         word_list[w].append((row['Latitude'], row['Longitude']))
+        word_list = self.select_words(date)
         result = []
         for key, values in word_list.items():
             r = self.score(key, values, latitude, longitude)
@@ -104,13 +125,25 @@ class Annotation(object):
         e = np.exp(-1 / (2 * h) * x.dot(x.T))
         return 1 / (2 * np.pi * h) * e
 
+    def patch_annotation(self, date, by='grid'):
+        if by == 'gird':
+            self.annotation_by_grid(date)
 
-# if __name__ == '__main__':
-#
-#     # fsq_file = '../data/processed_madison.csv'
-#     tweets_file = '../data/tweets_processed.csv'
-#     stop_words_file = '../data/stop-word-list.csv'
-#     ann = Annotation()
-#     ann.initialize_data(tweets_file, stop_words_file)
-#     annotation_doc = ann.anntation()
+    def annotation_by_grid(self, date, step=0.0001):
+        select = self.tweets[self.tweets['Date'] == date]
+        word_list = defaultdict(list)
+        for index, row in select.iterrows():
+            words = set(row['Tweet content'].split())
+            for w in self.word_filter(words):
+                word_list[w].append((row['Latitude'], row['Longitude']))
+        start_lati, end_lati = 33.9986, 34.1131
+        start_lang, end_lang = -118.4117, -118.1760
+        result = []
+        for lati in range(start_lati, end_lati, step):
+            for lang in range(start_lang, end_lang, step):
+                for key, values in word_list.items():
+                    r = self.score(key, values, lati, long)
+                    result.append(r)
+
+
 
